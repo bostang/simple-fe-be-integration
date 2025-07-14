@@ -1,31 +1,59 @@
 package com.simple_be.demo;
 
-// src/main/java/com/example/loginbackend/AuthController.java
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin; // Untuk hashing password
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simple_be.demo.model.User;
+import com.simple_be.demo.repository.UserRepository;
+
 @RestController
-@RequestMapping("/api") // Semua endpoint di controller ini akan diawali dengan /api
-@CrossOrigin(origins = "http://localhost:3000") // Penting: Izinkan frontend React Anda
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000") // Pastikan CORS di sini juga jika endpoint spesifik
 public class AuthController {
 
-    @PostMapping("/login") // Endpoint untuk menerima permintaan login
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Logika sederhana untuk validasi username dan password
-        System.out.println("Menerima permintaan login untuk username: " + loginRequest.getUsername());
+    @Autowired
+    private UserRepository userRepository;
 
-        if ("user".equals(loginRequest.getUsername()) && "pass".equals(loginRequest.getPassword())) {
-            // Jika username dan password cocok
-            return ResponseEntity.ok(new MessageResponse("Login berhasil! Selamat datang, " + loginRequest.getUsername() + "!"));
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Akan dibahas di bawah
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
+        // Cek apakah username sudah ada
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return new ResponseEntity<>("Username sudah terdaftar!", HttpStatus.BAD_REQUEST);
+        }
+
+        // Hash password sebelum disimpan
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepository.save(user);
+        return new ResponseEntity<>("User berhasil terdaftar!", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody User loginRequest) {
+        Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // Verifikasi password yang di-hash
+            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                return new ResponseEntity<>("Login berhasil!", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Password salah!", HttpStatus.UNAUTHORIZED);
+            }
         } else {
-            // Jika username atau password salah
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Username atau password salah."));
+            return new ResponseEntity<>("Username tidak ditemukan!", HttpStatus.NOT_FOUND);
         }
     }
 }

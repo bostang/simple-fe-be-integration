@@ -4,6 +4,13 @@ sebuah frontend sederhana untuk testing connect frontend (berbasis JS React) ke 
 
 ## Cara Menjalankan
 
+### Langkah 0 : Inisiasi database
+
+```bash
+# jalankan DB_initialization.sql
+psql -U postgres -f DB_initialization.sql
+```
+
 ### Langkah 1 : Buat & Jalankan Backend
 
 ```bash
@@ -29,7 +36,11 @@ npx create-react-app simple_form
 
 # LANGKAH 2 : INSTALL DEPENDENCY
 cd simple_form # masuk ke dalam folder proyek
+
+
 npm install react-bootstrap bootstrap
+# untuk interaksi API (lebih baik dari fetch)
+npm install axios
 
 # LANGKAH 3 : ubah src/App.js
 
@@ -42,8 +53,18 @@ localhost:3000
 
 ## Demonstrasi
 
-![tampilan-frontend-demo](./img/tampilan-frontend-demo.png)
+tampilan frontend (password salah) :
 
-tampilan pada log :
+![tampilan-frontend-demo-1](./img/tampilan-frontend-demo-1.png)
+
+tampilan frontend (password benar) :
+
+![tampilan-frontend-demo-2](./img/tampilan-frontend-demo-2.png)
+
+tampilan pada log backend:
 
 ![tampilan-backend-demo](./img/tampilan-backend-demo.png)
+
+tampilan DB :
+
+![tampilan-db-demo](./img/tampilan-db-demo.png)
