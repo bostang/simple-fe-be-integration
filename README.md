@@ -19,7 +19,7 @@ psql -U postgres -f DB_initialization.sql
     # - Spring Web
     # - Spring Boot DevTools
 
-# LANGKAH 2 : buat file
+# LANGKAH 2 : buat seluruh file di src
 
 # LANGKAH 3: JALANKAN APLIKASI SPRINGBOOT
 mvn spring-boot:run
@@ -28,21 +28,21 @@ mvn spring-boot:run
 ### Langkah 2 : Buat & Jalankan Frontend
 
 ```bash
+# CATATAN : buat dari folder simple_fe kosong! jangan pakai yang ada di github repo, karena node_modules ter-ignore.
 
 # LANGKAH 1 : BUAT TEMPLATE KOSONG PROJECT REACT
 # sintaks:
     # npx create-react-app <nama_folder>
-npx create-react-app simple_form    
+npx create-react-app simple_fe  
 
 # LANGKAH 2 : INSTALL DEPENDENCY
-cd simple_form # masuk ke dalam folder proyek
-
+cd simple_fe # masuk ke dalam folder proyek
 
 npm install react-bootstrap bootstrap
 # untuk interaksi API (lebih baik dari fetch)
 npm install axios
 
-# LANGKAH 3 : ubah src/App.js
+# LANGKAH 3 : ubah src/App.js , src/components/AuthForm.js 
 
 # LANGKAH 4 : jalankan app react
 npm start
