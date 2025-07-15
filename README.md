@@ -51,6 +51,9 @@ npm install react-bootstrap bootstrap
 # untuk interaksi API (lebih baik dari fetch)
 npm install axios
 
+# Declarative routing for React web applications
+npm install react-router-dom
+
 # LANGKAH 3 : ubah src/App.js , src/components/AuthForm.js 
 
 # LANGKAH 4 : jalankan app react
