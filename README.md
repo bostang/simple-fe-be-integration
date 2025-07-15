@@ -2,6 +2,15 @@
 
 sebuah frontend sederhana untuk testing connect frontend (berbasis JS React) ke backend.
 
+## Arsitektur
+
+```conf
+PORT_BE_VERIFIKATOR=8083
+PORT_BE_REGISTER_LOGIN=8081
+PORT_DUKCAPIL=8082
+PORT_FE=3000
+```
+
 ## Cara Menjalankan
 
 ### Langkah 0 : Inisiasi database
@@ -33,10 +42,10 @@ mvn spring-boot:run
 # LANGKAH 1 : BUAT TEMPLATE KOSONG PROJECT REACT
 # sintaks:
     # npx create-react-app <nama_folder>
-npx create-react-app simple_fe  
+npx create-react-app fe  
 
 # LANGKAH 2 : INSTALL DEPENDENCY
-cd simple_fe # masuk ke dalam folder proyek
+cd fe # masuk ke dalam folder proyek
 
 npm install react-bootstrap bootstrap
 # untuk interaksi API (lebih baik dari fetch)
