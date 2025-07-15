@@ -7,14 +7,14 @@ function AuthForm() {
     username: '',
     password: '',
     namaLengkap: '',
-    NIK: '',
+    NIK: '', // Pastikan NIK ada di state
     namaIbuKandung: '',
     nomorTelepon: '',
     email: '',
-    tipeAkun: '', // Akan jadi string yang sama dengan nama enum (e.g., 'BNI_TAPLUS')
+    tipeAkun: '',
     tempatLahir: '',
     tanggalLahir: '',
-    jenisKelamin: '', // Akan jadi string nama enum (e.g., 'LAKI_LAKI')
+    jenisKelamin: '',
     agama: '',
     statusPernikahan: '',
     pekerjaan: '',
@@ -41,20 +41,20 @@ function AuthForm() {
 
   const [message, setMessage] = useState('');
   const [isRegistering, setIsRegistering] = useState(true);
+  const [nikValidationMessage, setNikValidationMessage] = useState(''); // State baru untuk pesan validasi NIK
 
-  const API_BASE_URL = 'http://localhost:8081/api/auth'; // Sesuaikan port
+  const API_BASE_URL = 'http://localhost:8081/api/auth'; // Sesuaikan port backend utama Anda
+  const VALIDATOR_API_URL = 'http://localhost:8082/api/validator'; // URL backend validator Anda
 
-  // Opsi Dropdown
+  // Opsi Dropdown (tetap sama seperti sebelumnya)
   const tipeAkunOptions = [
     { value: 'BNI_TAPLUS', label: 'BNI Taplus' },
     { value: 'BNI_TAPLUS_MUDA', label: 'BNI Taplus Muda' }
   ];
-
   const jenisKelaminOptions = [
     { value: 'LAKI_LAKI', label: 'Laki-laki' },
     { value: 'PEREMPUAN', label: 'Perempuan' }
   ];
-
   const agamaOptions = [
     { value: 'ISLAM', label: 'Islam' },
     { value: 'KRISTEN', label: 'Kristen' },
@@ -63,21 +63,18 @@ function AuthForm() {
     { value: 'KONGHUCU', label: 'Konghucu' },
     { value: 'LAINNYA', label: 'Lainnya' }
   ];
-
   const statusPernikahanOptions = [
     { value: 'SINGLE', label: 'Single' },
     { value: 'MENIKAH', label: 'Menikah' },
     { value: 'DUDA', label: 'Duda' },
     { value: 'JANDA', label: 'Janda' }
   ];
-
   const sumberPenghasilanOptions = [
     { value: 'GAJI', label: 'Gaji' },
     { value: 'HASIL_INVESTASI', label: 'Hasil Investasi' },
     { value: 'HASIL_USAHA', label: 'Hasil Usaha' },
     { value: 'WARISAN_HIBAH', label: 'Warisan/Hibah' }
   ];
-
   const rentangGajiOptions = [
     { value: 'KURANG_DARI_3_JUTA', label: 'Kurang dari Rp3 juta' },
     { value: 'ANTARA_3_5_JUTA', label: '>Rp3 - 5 juta' },
@@ -87,17 +84,16 @@ function AuthForm() {
     { value: 'ANTARA_50_100_JUTA', label: '>Rp50 - 100 juta' },
     { value: 'LEBIH_DARI_100_JUTA', label: '>Rp100 juta' }
   ];
-
   const tujuanRekeningOptions = [
     { value: 'INVESTASI', label: 'Investasi' },
     { value: 'TABUNGAN', label: 'Tabungan' },
     { value: 'TRANSAKSI', label: 'Transaksi' }
   ];
-
   const jenisWaliOptions = [
     { value: 'AYAH', label: 'Ayah' },
     { value: 'IBU', label: 'Ibu' }
   ];
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +101,11 @@ function AuthForm() {
       ...prevData,
       [name]: value
     }));
+
+    // Reset validasi NIK saat NIK atau Nama Lengkap berubah
+    if (name === 'NIK' || name === 'namaLengkap') {
+      setNikValidationMessage('');
+    }
   };
 
   const handleNestedChange = (e, parentKey) => {
@@ -118,11 +119,50 @@ function AuthForm() {
     }));
   };
 
+  // --- Fungsi Baru: Validasi NIK dan Nama Lengkap ---
+  const validateNikAndNama = async (nik, namaLengkap) => {
+    if (!nik || !namaLengkap) {
+      setNikValidationMessage('NIK dan Nama Lengkap diperlukan untuk validasi.');
+      return false;
+    }
+
+    try {
+      const response = await axios.post(`${VALIDATOR_API_URL}/validate/nik-nama`, {
+        nik: nik,
+        namaLengkap: namaLengkap
+      });
+      // Asumsi responsnya adalah { nikNamaMatches: true/false }
+      if (response.data.nikNamaMatches) {
+        setNikValidationMessage('Validasi NIK dan Nama Lengkap berhasil.');
+        return true;
+      } else {
+        setNikValidationMessage('NIK atau Nama Lengkap tidak cocok dengan data terdaftar.');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error saat memvalidasi NIK:', error);
+      setNikValidationMessage('Terjadi kesalahan saat memvalidasi NIK. Coba lagi nanti.');
+      return false;
+    }
+  };
+  // ----------------------------------------------------
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
+    setNikValidationMessage(''); // Reset pesan validasi NIK sebelumnya
 
     const endpoint = isRegistering ? '/register' : '/login';
+
+    if (isRegistering) {
+      // Lakukan validasi NIK dan Nama Lengkap sebelum mengirim data ke backend utama
+      const isNikValid = await validateNikAndNama(formData.NIK, formData.namaLengkap);
+
+      if (!isNikValid) {
+        // Jika validasi NIK gagal, hentikan proses submit
+        return;
+      }
+    }
 
     // Pastikan kodeRekening diubah menjadi number jika ada isinya, kalau tidak null
     const dataToSend = {
@@ -174,6 +214,14 @@ function AuthForm() {
               <label htmlFor="NIK" style={{ display: 'block', marginBottom: '5px' }}>NIK:</label>
               <input type="text" id="NIK" name="NIK" value={formData.NIK} onChange={handleChange} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
             </div>
+
+            {/* Pesan validasi NIK */}
+            {nikValidationMessage && (
+              <p style={{ color: nikValidationMessage.includes('berhasil') ? 'green' : 'red', fontSize: '0.9em', marginTop: '-10px', marginBottom: '10px' }}>
+                {nikValidationMessage}
+              </p>
+            )}
+
             <div style={{ marginBottom: '15px' }}>
               <label htmlFor="namaIbuKandung" style={{ display: 'block', marginBottom: '5px' }}>Nama Ibu Kandung:</label>
               <input type="text" id="namaIbuKandung" name="namaIbuKandung" value={formData.namaIbuKandung} onChange={handleChange} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
