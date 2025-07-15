@@ -44,7 +44,7 @@ function AuthForm() {
   const [nikValidationMessage, setNikValidationMessage] = useState(''); // State baru untuk pesan validasi NIK
 
   const API_BASE_URL = 'http://localhost:8081/api/auth'; // Sesuaikan port backend utama Anda
-  const VALIDATOR_API_URL = 'http://localhost:8082/api/validator'; // URL backend validator Anda
+//   const VALIDATOR_API_URL = 'http://localhost:8082/api/validator'; // URL backend validator Anda
 
   // Opsi Dropdown (tetap sama seperti sebelumnya)
   const tipeAkunOptions = [
@@ -120,19 +120,47 @@ function AuthForm() {
   };
 
   // --- Fungsi Baru: Validasi NIK dan Nama Lengkap ---
+//   const validateNikAndNama = async (nik, namaLengkap) => {
+//     if (!nik || !namaLengkap) {
+//       setNikValidationMessage('NIK dan Nama Lengkap diperlukan untuk validasi.');
+//       return false;
+//     }
+
+//     try {
+//       const response = await axios.post(`${VALIDATOR_API_URL}/validate/nik-nama`, {
+//         nik: nik,
+//         namaLengkap: namaLengkap
+//       });
+//       // Asumsi responsnya adalah { nikNamaMatches: true/false }
+//       if (response.data.nikNamaMatches) {
+//         setNikValidationMessage('Validasi NIK dan Nama Lengkap berhasil.');
+//         return true;
+//       } else {
+//         setNikValidationMessage('NIK atau Nama Lengkap tidak cocok dengan data terdaftar.');
+//         return false;
+//       }
+//     } catch (error) {
+//       console.error('Error saat memvalidasi NIK:', error);
+//       setNikValidationMessage('Terjadi kesalahan saat memvalidasi NIK. Coba lagi nanti.');
+//       return false;
+//     }
+//   };
+  // ----------------------------------------------------
+
   const validateNikAndNama = async (nik, namaLengkap) => {
     if (!nik || !namaLengkap) {
       setNikValidationMessage('NIK dan Nama Lengkap diperlukan untuk validasi.');
       return false;
     }
-
+  
     try {
-      const response = await axios.post(`${VALIDATOR_API_URL}/validate/nik-nama`, {
+      const response = await axios.post(`${API_BASE_URL}/client/check-nik-nama-matches`, {
         nik: nik,
         namaLengkap: namaLengkap
       });
-      // Asumsi responsnya adalah { nikNamaMatches: true/false }
-      if (response.data.nikNamaMatches) {
+  
+      // Perhatikan key: nikNamaMatchesInExternal
+      if (response.data.nikNamaMatchesInExternal) {
         setNikValidationMessage('Validasi NIK dan Nama Lengkap berhasil.');
         return true;
       } else {
@@ -145,7 +173,7 @@ function AuthForm() {
       return false;
     }
   };
-  // ----------------------------------------------------
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
