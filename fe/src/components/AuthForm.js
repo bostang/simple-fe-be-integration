@@ -43,7 +43,7 @@ function AuthForm() {
   const [isRegistering, setIsRegistering] = useState(true);
   const [nikValidationMessage, setNikValidationMessage] = useState(''); // State baru untuk pesan validasi NIK
 
-  const API_BASE_URL = 'http://localhost:8081/api/auth'; // Sesuaikan port backend utama Anda
+  const API_BASE_URL = 'http://localhost:8083/api/auth'; // Sesuaikan port backend utama Anda
 //   const VALIDATOR_API_URL = 'http://localhost:8082/api/validator'; // URL backend validator Anda
 
   // Opsi Dropdown (tetap sama seperti sebelumnya)
