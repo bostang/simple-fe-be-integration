@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Untuk redirect setelah logout
-import axios from 'axios'; // Untuk memanggil API yang dilindungi
+// import axios from 'axios'; // Untuk memanggil API yang dilindungi
+import axiosInstance from '../axiosConfig'; // Impor axiosInstance Anda
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -19,11 +20,12 @@ const DashboardPage = () => {
       try {
         // Ganti URL ini dengan endpoint API Spring Boot yang dilindungi
         // Contoh: endpoint yang membutuhkan autentikasi
-        const response = await axios.get('http://localhost:8083/api/protected-resource', {
-          headers: {
-            'Authorization': `Bearer ${token}` // Kirim token di header Authorization
-          }
-        });
+        // const response = await axios.get('http://backend:8083/api/protected-resource', {
+        //   headers: {
+        //     'Authorization': `Bearer ${token}` // Kirim token di header Authorization
+        //   }
+        // });
+        const response = await axiosInstance.get('/api/protected-resource'); // Path relatif karena baseURL sudah diatur
         setMessage(response.data); // Asumsi backend mengirim pesan selamat datang
       } catch (err) {
         console.error('Error fetching protected data:', err);

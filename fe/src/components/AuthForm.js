@@ -53,9 +53,9 @@ function AuthForm({ type }) {
   const isRegisterMode = type === 'register';
 
   // Base URL untuk API autentikasi Anda
-  const API_AUTH_BASE_URL = 'http://localhost:8083/api/auth';
+  const API_AUTH_BASE_URL = 'http://backend:8083/api/auth';
   // URL untuk validasi NIK (pastikan ini sesuai dengan backend verifikasi NIK Anda)
-  const API_CLIENT_BASE_URL = 'http://localhost:8083/client';
+  const API_CLIENT_BASE_URL = 'http://backend:8083/client';
 
   // Opsi Dropdown (tetap sama seperti sebelumnya)
   const tipeAkunOptions = [

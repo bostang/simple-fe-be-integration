@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8083/', // Sesuaikan dengan base URL backend Anda
+  baseURL: 'http://backend:8083/', // Sesuaikan dengan base URL backend Anda
   headers: {
     'Content-Type': 'application/json',
   },
