@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Data // Lombok: Menghasilkan getter, setter, toString, equals, hashCode
 @NoArgsConstructor // Lombok: Menghasilkan constructor tanpa argumen
 @AllArgsConstructor // Lombok: Menghasilkan constructor dengan semua argumen
+// Kelas ini digunakan untuk menyimpan informasi penduduk
+// Kelas ini akan berisi informasi seperti NIK, nama lengkap, tanggal lahir, dan alamat
 public class Penduduk {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

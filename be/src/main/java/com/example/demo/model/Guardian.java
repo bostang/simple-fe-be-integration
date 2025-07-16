@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "guardians")
+// Kelas ini digunakan untuk menyimpan informasi wali penduduk
+// Kelas ini akan berisi informasi wali seperti jenis wali, nama lengkap, pekerjaan, alamat, dan nomor telepon
 public class Guardian {
 
     @Id

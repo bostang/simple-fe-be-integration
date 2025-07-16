@@ -5,6 +5,7 @@ import com.example.demo.security.jwt.AuthEntryPointJwt; // Import AuthEntryPoint
 import com.example.demo.security.jwt.AuthTokenFilter; // Import AuthTokenFilter
 import com.example.demo.service.UserDetailsServiceImpl; // Import UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager; // Import AuthenticationManager
@@ -27,9 +28,13 @@ import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity // Jika Anda ingin menggunakan @PreAuthorize
+// Kelas ini digunakan untuk mengkonfigurasi keamanan aplikasi Spring Boot
+// Ini termasuk pengaturan autentikasi, otorisasi, dan CORS (Cross-Origin Resource Sharing)
+// Kelas ini juga mengatur filter JWT untuk autentikasi berbasis token
+
+@Configuration // untuk menandai kelas sebagai konfigurasi Spring
+@EnableWebSecurity // untuk mengaktifkan keamanan web Spring
+@EnableMethodSecurity // Opsional: untuk mengaktifkan anotasi keamanan pada metode (seperti @PreAuthorize)
 public class SecurityConfig {
 
     @Autowired
@@ -44,6 +49,10 @@ public class SecurityConfig {
     }
 
     @Bean
+    // Bean untuk DaoAuthenticationProvider yang digunakan untuk autentikasi berbasis username/password
+    // Ini menghubungkan UserDetailsServiceImpl dan PasswordEncoder
+    // DaoAuthenticationProvider akan digunakan oleh Spring Security untuk memverifikasi kredensial pengguna
+    // Ini juga memungkinkan penggunaan BCryptPasswordEncoder untuk mengenkripsi password
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
@@ -52,19 +61,33 @@ public class SecurityConfig {
     }
 
     @Bean
+    // Bean untuk AuthenticationManager yang digunakan untuk mengelola autentikasi
+    // Ini mengambil konfigurasi autentikasi dari AuthenticationConfiguration
+    // AuthenticationManager ini akan digunakan oleh Spring Security untuk memproses autentikasi
+    // Ini memungkinkan penggunaan autentikasi berbasis token JWT
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
+    // Bean untuk PasswordEncoder yang digunakan untuk mengenkripsi password
+    // BCryptPasswordEncoder adalah implementasi yang aman untuk mengenkripsi password
+    // Ini akan digunakan oleh DaoAuthenticationProvider untuk memverifikasi password pengguna
+    // Ini juga memungkinkan penggunaan password yang terenkripsi dalam database
+    // PasswordEncoder ini akan digunakan untuk mengamankan password pengguna
+    // sehingga tidak disimpan dalam bentuk teks biasa
+    // Ini juga memungkinkan penggunaan password yang terenkripsi dalam database
+    // sehingga password pengguna aman dari akses yang tidak sah
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
+    // Bean untuk SecurityFilterChain yang mengkonfigurasi keamanan aplikasi
+    // Ini mengatur aturan keamanan untuk endpoint, filter JWT, dan CORS
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable) // Nonaktifkan CSRF karena kita menggunakan JWT
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // Tambahkan JWT AuthEntryPoint
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Set sesi tanpa status
             .authorizeHttpRequests(authorize -> authorize
@@ -81,10 +104,16 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Suntikkan nilai dari properti app.cors.allowed-origins
+    @Value("${app.cors.allowed-origins}")
+    private String[] allowedOrigins; // Atau List<String> jika Anda lebih suka
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins)); // Gunakan nilai dari properti
+        // Izinkan semua metode HTTP
+        // Ini memungkinkan akses dari semua origin yang ditentukan dalam app.cors.allowed-origins
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

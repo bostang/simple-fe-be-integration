@@ -19,6 +19,9 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 
 @Component
+// Kelas ini digunakan untuk memfilter setiap permintaan HTTP yang masuk
+// untuk memeriksa apakah ada token JWT yang valid dalam header permintaan
+// Jika token valid, maka pengguna akan diotentikasi dan informasi pengguna akan disimpan dalam konteks keamanan
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
@@ -29,6 +32,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
+    // Metode ini akan dipanggil untuk setiap permintaan HTTP yang masuk
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {

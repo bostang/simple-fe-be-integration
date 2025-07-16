@@ -8,7 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
+// Nama tabel dalam database
 @Table(name = "addresses")
+// Kelas ini digunakan untuk menyimpan informasi alamat penduduk
+// Kelas ini akan berisi informasi alamat seperti nama alamat, provinsi, kota, kecamatan, kelurahan, dan kode pos
 public class Address {
 
     @Id

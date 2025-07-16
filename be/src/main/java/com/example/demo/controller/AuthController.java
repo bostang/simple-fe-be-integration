@@ -16,19 +16,25 @@ import org.springframework.security.core.context.SecurityContextHolder; // Impor
 import org.springframework.security.core.userdetails.UserDetails; // Import UserDetails
 import org.springframework.web.bind.annotation.*;
 
+// Kelas ini digunakan untuk mengelola autentikasi pengguna
+// Ini termasuk registrasi pengguna, login, dan mendapatkan profil pengguna
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+// Menandai kelas ini sebagai RestController untuk menangani permintaan HTTP
+@RequestMapping("/api/auth") // Mengatur path dasar untuk endpoint autentikasi
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class AuthController {
 
     @Autowired
     private AuthService authService; // Gunakan AuthService
+    // dari AuthService.java
 
     @Autowired
     AuthenticationManager authenticationManager; // Inject AuthenticationManager
+    // dari SecurityConfig.java
 
     @Autowired
     JwtUtils jwtUtils; // Inject JwtUtils
+    // dari JwtUtils.java
 
     // Endpoint untuk registrasi dengan data identitas lengkap
     @PostMapping("/register")
@@ -63,20 +69,6 @@ public class AuthController {
         } catch (Exception e) { // Tangkap Exception lebih umum untuk melihat detail error
             // Perbaiki penanganan error agar lebih spesifik
             return new ResponseEntity<>("Login gagal: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    // --- Opsional: Endpoint untuk mendapatkan data profil user (setelah login) ---
-    // Endpoint ini nantinya akan dilindungi oleh JWT Filter
-    @GetMapping("/profile/{username}")
-    public ResponseEntity<User> getUserProfile(@PathVariable String username) {
-        // Pada tahap ini, Anda bisa mendapatkan username dari JWT atau dari Principal
-        // Untuk sekarang, kita tetap panggil dari AuthService
-        User user = authService.getUserProfile(username);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

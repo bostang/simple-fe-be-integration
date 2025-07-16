@@ -5,8 +5,7 @@ sebuah frontend sederhana untuk testing connect frontend (berbasis JS React) ke 
 ## Arsitektur
 
 ```conf
-PORT_BE_VERIFIKATOR=8083
-PORT_BE_REGISTER_LOGIN=8081
+PORT_BE=8083
 PORT_DUKCAPIL=8082
 PORT_FE=3000
 ```
@@ -37,7 +36,7 @@ mvn spring-boot:run
 ### Langkah 2 : Buat & Jalankan Frontend
 
 ```bash
-# CATATAN : buat dari folder simple_fe kosong! jangan pakai yang ada di github repo, karena node_modules ter-ignore.
+# CATATAN : buat dari folder fe kosong! jangan pakai yang ada di github repo, karena node_modules ter-ignore.
 
 # LANGKAH 1 : BUAT TEMPLATE KOSONG PROJECT REACT
 # sintaks:
@@ -54,7 +53,11 @@ npm install axios
 # Declarative routing for React web applications
 npm install react-router-dom
 
-# LANGKAH 3 : ubah src/App.js , src/components/AuthForm.js 
+# LANGKAH 3 : ubah:
+# - src/App.js 
+# -src/components/AuthForm.js 
+# -src/pages/LandingPage.js 
+# -src/pages/DashboardPage.js 
 
 # LANGKAH 4 : jalankan app react
 npm start

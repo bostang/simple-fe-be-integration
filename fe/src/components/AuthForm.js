@@ -1,6 +1,7 @@
 // src/components/AuthForm.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
 // Perhatikan AuthForm sekarang menerima 'type' prop dari App.js
@@ -178,7 +179,8 @@ function AuthForm({ type }) {
     }
 
     try {
-      const response = await axios.post(`${API_CLIENT_BASE_URL}/check-nik-nama-matches`, {
+      // const response = await axios.post(`${API_CLIENT_BASE_URL}/check-nik-nama-matches`, {
+        const response = await axiosInstance.post(`${API_CLIENT_BASE_URL}/check-nik-nama-matches`, {
         nik: nik,
         namaLengkap: namaLengkap
       });
@@ -230,9 +232,10 @@ function AuthForm({ type }) {
     }
 
     try {
-      const response = await axios.post(`${API_AUTH_BASE_URL}${endpoint}`, dataToSend);
+      // const response = await axios.post(`${API_AUTH_BASE_URL}${endpoint}`, dataToSend);
+      const response = await axiosInstance.post(`${API_AUTH_BASE_URL}${endpoint}`, dataToSend);
 
-      // --- PERBAIKAN PENTING DI SINI ---
+      
       if (!isRegisterMode) { // Jika ini adalah proses login
         const token = response.data.token || response.data.jwt || response.data.accessToken; 
         

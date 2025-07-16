@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+// dipakai pada SecurityConfig.java
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 

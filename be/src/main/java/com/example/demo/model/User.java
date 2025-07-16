@@ -26,6 +26,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+// Kelas ini digunakan untuk menyimpan informasi pengguna (users) di database user_db
+// Kelas ini akan berisi informasi pengguna seperti username, password, nama lengkap, NIK, alamat, wali, dan informasi akun lainnya
 public class User {
 
     @Id

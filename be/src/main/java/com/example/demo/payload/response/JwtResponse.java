@@ -1,5 +1,6 @@
 package com.example.demo.payload.response;
 
+// Kelas ini digunakan untuk mengirimkan respons JWT setelah autentikasi berhasil
 public class JwtResponse {
     private String token;
     private String type = "Bearer";

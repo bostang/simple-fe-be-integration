@@ -6,6 +6,7 @@ const LandingPage = () => {
     <div style={styles.container}>
       <h1>Selamat Datang!</h1>
       <p>Silakan masuk atau daftar untuk melanjutkan.</p>
+      {/* button u/ login dan register */}
       <div style={styles.buttonGroup}>
         <Link to="/login" style={styles.button}>Login</Link>
         <Link to="/register" style={styles.button}>Daftar</Link>

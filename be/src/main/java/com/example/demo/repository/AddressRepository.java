@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.model.Address;
 
 @Repository
+// Kelas ini digunakan untuk mengelola operasi database terkait alamat
+// Kelas ini akan menyediakan metode untuk menyimpan, mengambil, memperbarui, dan menghapus alamat penduduk
 public interface AddressRepository extends JpaRepository<Address, Long> {
 }

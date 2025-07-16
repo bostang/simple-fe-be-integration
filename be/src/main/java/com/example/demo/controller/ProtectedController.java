@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api") // Sesuaikan base path
+// Menandai kelas ini sebagai RestController untuk menangani permintaan HTTP
+@RequestMapping("/api")
 public class ProtectedController {
-
+    // Endpoint yang dilindungi, hanya dapat diakses oleh pengguna yang telah diautentikasi
+    // Endpoint ini dapat diakses oleh pengguna yang telah berhasil login
+    // dan memiliki peran yang sesuai (jika menggunakan @PreAuthorize)
+    // Misalnya, jika menggunakan JWT, pengguna harus mengirimkan token JWT di header Authorization
     @GetMapping("/protected-resource")
-    // @PreAuthorize("hasRole('USER')") // Opsional: Hanya izinkan pengguna dengan peran 'USER'
     public ResponseEntity<String> getProtectedResource() {
         return ResponseEntity.ok("Selamat datang! Anda telah berhasil mengakses sumber daya yang dilindungi.");
+        // respons ini akan dikirimkan jika pengguna telah berhasil diautentikasi (login)
     }
 }
