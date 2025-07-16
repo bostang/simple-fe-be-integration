@@ -11,11 +11,20 @@ curl --location --request POST 'http://localhost:8082/api/validator/add-dummy-da
 ### Cek if nik exist (GET)
 
 ```bash
+# GAGAL (NIK tidak ada)
 curl --location --request POST 'http://localhost:8082/api/validator/validate/nik-exists' \
 --header 'Content-Type: application/json' \
 --data '{
     "nik": "1234567890123456"
 }'
+
+# SUKSES
+curl --location --request POST 'http://localhost:8082/api/validator/validate/nik-exists' \
+--header 'Content-Type: application/json' \
+--data '{
+    "nik": "3201010000000001"
+}'
+
 
 curl --location --request POST 'https://bracelets-marilyn-ing-charging.trycloudflare.com/api/validator/validate/nik-exists' \
 --header 'Content-Type: application/json' \

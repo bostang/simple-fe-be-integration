@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.validator.demo.dto.ValidationRequest;
 import com.validator.demo.model.Penduduk;
@@ -21,10 +22,10 @@ import com.validator.demo.service.PendudukService;
 @RestController
 @RequestMapping("/api/validator")
 // Mengizinkan CORS dari frontend React (port 3000)
-// @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST, RequestMethod.GET})
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST, RequestMethod.GET})
 // @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8081"}) // Contoh: Mengizinkan frontend dan backend pertama
 // @CrossOrigin(origins = "${app.cors.allowed-origins}") // Contoh: Mengizinkan frontend dan backend pertama
-@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+// @CrossOrigin(origins = "${app.cors.allowed-origins}", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ValidatorController {
 
     @Autowired
