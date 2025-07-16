@@ -7,10 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    @Value("${app.cors.allowed-origins}")
+    private String[] allowedOrigins; // Atau List<String> jika Anda lebih suka
+    
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Mengizinkan CORS untuk semua endpoint
-                .allowedOrigins("http://localhost:3000", "http://localhost:8081") // Asal yang diizinkan
+                .allowedOrigins(Arrays.asList(allowedOrigins)) // Asal yang diizinkan
+                // .allowedOrigins(allowedOrigins) // Asal yang diizinkan
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Metode HTTP yang diizinkan
                 .allowedHeaders("*") // Header yang diizinkan
                 .allowCredentials(true) // Mengizinkan kredensial (seperti cookie, header otorisasi)

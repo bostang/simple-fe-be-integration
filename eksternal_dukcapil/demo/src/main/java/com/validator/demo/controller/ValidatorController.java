@@ -22,7 +22,9 @@ import com.validator.demo.service.PendudukService;
 @RequestMapping("/api/validator")
 // Mengizinkan CORS dari frontend React (port 3000)
 // @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.POST, RequestMethod.GET})
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8081"}) // Contoh: Mengizinkan frontend dan backend pertama
+// @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8081"}) // Contoh: Mengizinkan frontend dan backend pertama
+// @CrossOrigin(origins = "${app.cors.allowed-origins}") // Contoh: Mengizinkan frontend dan backend pertama
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ValidatorController {
 
     @Autowired

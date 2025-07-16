@@ -8,10 +8,12 @@
 -- Pastikan terkoneksi ke database default seperti 'postgres' saat menjalankan perintah ini.
 -- Ganti 'user_db' jika  ingin nama database yang berbeda.
 
-DROP DATABASE IF EXISTS user_db; -- Hapus database jika sudah ada, untuk menghindari error saat membuat ulang
-CREATE DATABASE user_db WITH OWNER postgres; -- Ganti 'postgres' jika ingin menggunakan owner yang berbeda
--- Menghubungkan ke database yang baru dibuat (jika menggunakan psql atau client lain)
-\c user_db;
+-- COMMENT APABILA MENGGUNAKAN CONTAINER
+-- DROP DATABASE IF EXISTS user_db; -- Hapus database jika sudah ada, untuk menghindari error saat membuat ulang
+-- CREATE DATABASE user_db WITH OWNER postgres; -- Ganti 'postgres' jika ingin menggunakan owner yang berbeda
+-- -- Menghubungkan ke database yang baru dibuat (jika menggunakan psql atau client lain)
+-- \c user_db;
+
 -- Jika  menjalankan ini dari tools seperti DBeaver atau pgAdmin,
 --  biasanya akan memilih database 'user_db' terlebih dahulu.
 

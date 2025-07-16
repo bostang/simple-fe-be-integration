@@ -66,7 +66,19 @@ npm start
 localhost:3000
 ```
 
-## Demonstrasi
+## TIPS DEBUGGING U/ DEVOPS
+
+```bash
+docker ps
+
+docker exec -it [nama_container / ID container] [command]
+
+docker compose down -v
+
+docker compose up --build
+```
+
+## Demonstrasi (DEPRECATED)
 
 tampilan frontend (password salah) :
 

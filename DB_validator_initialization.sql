@@ -1,11 +1,13 @@
 -- File: DB_validator_initialization.sql
 -- This script initializes the database and sets up the necessary tables for validation
 
-DROP DATABASE IF EXISTS nik_db; -- Hapus database jika sudah ada, untuk menghindari error saat membuat ulang
-CREATE DATABASE nik_db WITH OWNER postgres; -- Ganti 'postgres' jika ingin menggunakan owner yang       
 
--- Menghubungkan ke database yang baru dibuat
-\connect nik_db 
+-- COMMENT APABILA MENGGUNAKAN CONTAINER
+-- DROP DATABASE IF EXISTS nik_db; -- Hapus database jika sudah ada, untuk menghindari error saat membuat ulang
+-- CREATE DATABASE nik_db WITH OWNER postgres; -- Ganti 'postgres' jika ingin menggunakan owner yang       
+
+-- -- Menghubungkan ke database yang baru dibuat
+-- \connect nik_db 
 
 
 DROP TABLE IF EXISTS penduduk CASCADE;
