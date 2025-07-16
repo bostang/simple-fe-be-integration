@@ -69,4 +69,5 @@ services:
       - backend
       - external_validator
     ports:
-      - "3000:3000"
+    - "3000:80"   # nginx secara default akan mendengarkan pada port 80, bukan 3000
+      # - "3000:3000"

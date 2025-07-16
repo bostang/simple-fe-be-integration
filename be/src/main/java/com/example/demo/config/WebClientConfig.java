@@ -18,7 +18,12 @@ public class WebClientConfig {
     @Bean
     // Bean untuk WebClient yang akan digunakan untuk berkomunikasi dengan aplikasi verifikator NIK
     // WebClient ini akan mengirimkan permintaan ke endpoint yang telah ditentukan
+
     public WebClient externalValidatorWebClient(WebClient.Builder webClientBuilder) {
+
+        // --- ADD THIS LOG STATEMENT TO DEBUG ---
+        System.out.println("Initializing WebClient with base URL: " + validatorBaseUrl);
+
         // Base URL untuk aplikasi verifikator NIK yang berjalan di port 8082
         return webClientBuilder
                 .baseUrl(validatorBaseUrl)
