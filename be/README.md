@@ -117,7 +117,7 @@ Memeriksa apakah NIK yang diberikan terdaftar dalam sistem verifikator eksternal
       http://localhost:8083/client/check-nik-exists \
       -H 'Content-Type: application/json' \
       -d '{
-        "nik": "1234567890123456"
+        "nik": "3201010000000001"
       }'
     ```
 

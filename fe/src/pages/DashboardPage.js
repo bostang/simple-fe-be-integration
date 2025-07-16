@@ -19,7 +19,8 @@ const DashboardPage = () => {
       try {
         // Ganti URL ini dengan endpoint API Spring Boot yang dilindungi
         // Contoh: endpoint yang membutuhkan autentikasi
-        const response = await axios.get('http://localhost:8083/api/protected-resource', {
+        // const response = await axios.get('http://localhost:8083/api/protected-resource', {
+          const response = await axios.get('http://backend:8083/api/protected-resource', {
           headers: {
             'Authorization': `Bearer ${token}` // Kirim token di header Authorization
           }

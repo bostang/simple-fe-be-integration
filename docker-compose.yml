@@ -1,0 +1,93 @@
+services:
+  postgres_main:
+    image: postgres:17
+    container_name: db_main
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user_db
+    volumes:
+      - ./DB_initialization.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres_validator:
+    image: postgres:17
+    container_name: db_validator
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nik_db
+    volumes:
+      - ./DB_validator_initialization.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./be
+    container_name: backend
+    depends_on:
+      postgres_main:
+        condition: service_healthy
+      external_validator:
+        condition: service_started
+    environment:
+      # Database Configuration (sesuai yang sudah ada)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_main:5432/user_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      
+      # Backend Configuration
+      SERVER_PORT: 8083
+      
+      # Validator Service URL (menggunakan service name)
+      APP_VALIDATOR_BASE_URL: http://external_validator:8082/api/validator
+      
+      # CORS Configuration
+      APP_CORS_ALLOWED_ORIGINS: http://frontend:80,http://localhost:3000
+    ports:
+      - "8083:8083"
+
+  external_validator:
+    build:
+      context: ./eksternal_dukcapil
+    container_name: external_validator
+    depends_on:
+      postgres_validator:
+        condition: service_healthy
+    environment:
+      # Database Configuration (sesuai yang sudah ada)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_validator:5432/nik_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      
+      # Backend Configuration
+      SERVER_PORT: 8082
+      
+      # CORS Configuration
+      APP_CORS_ALLOWED_ORIGINS: http://frontend:80,http://backend:8083
+    ports:
+      - "8082:8082"
+
+  frontend:
+    build:
+      context: ./fe
+    container_name: frontend
+    depends_on:
+      - backend
+    environment:
+      # Konfigurasi API endpoint (gunakan service name untuk komunikasi internal)
+      REACT_APP_BACKEND_URL: http://backend:8083
+    ports:
+      - "3000:80"  # Nginx di container listen di port 80
