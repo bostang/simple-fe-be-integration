@@ -1,4 +1,4 @@
-STRICT CORS RULE
+// STRICT CORS RULE
 package com.validator.demo.config;
 
 import org.springframework.context.annotation.Configuration;
