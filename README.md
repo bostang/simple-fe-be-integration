@@ -88,6 +88,8 @@ localhost:3000
 
 ![tampilan-demo-frontend-landing-page](./img/tampilan-demo-frontend-landing-page.png)
 
+![tampilan-welcome-to-dashboard](./img/tampilan-welcome-to-dashboard.png)
+
 ## TESTING REGISTRASI (cURL)
 
 - **Registrasi**

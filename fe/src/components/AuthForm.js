@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
-function AuthForm({ type }) {
-  const navigate = useNavigate();
+
+// function AuthForm({ type }) {
+function AuthForm({ type, onLoginSuccess }) {
+const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -206,12 +208,20 @@ function AuthForm({ type }) {
       if (isRegisterMode) {
         setMessage(res.data.message || 'Registrasi berhasil!');
         setTimeout(() => navigate('/login'), 700);
-      } else {
+      } else { // Ini adalah blok sukses login
         const token = res.data.token || res.data.jwt || res.data.accessToken;
         if (token) {
           localStorage.setItem('token', token);
           setMessage('Login berhasil!');
-          setTimeout(() => navigate('/dashboard'), 700);
+          console.log('AuthForm: Token berhasil disimpan. Memanggil onLoginSuccess.');
+
+          // Panggil fungsi callback setelah token tersimpan
+          if (onLoginSuccess) {
+            onLoginSuccess();
+          }
+
+          // Navigasi setelah state di App.js diperbarui
+          navigate('/dashboard'); // Tidak perlu setTimeout di sini lagi
         } else {
           setError('Login sukses, tapi token tidak ditemukan.');
         }

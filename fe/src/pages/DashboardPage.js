@@ -1,8 +1,10 @@
+// DashboardPage.js
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Untuk redirect setelah logout
-import axios from 'axios'; // Untuk memanggil API yang dilindungi
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const DashboardPage = () => {
+// Terima onLogout sebagai prop
+const DashboardPage = ({ onLogout }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -10,27 +12,26 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const fetchProtectedData = async () => {
-      const token = localStorage.getItem('token'); // Ambil token dari Local Storage
+      const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login'); // Jika tidak ada token, arahkan ke halaman login
+        if (onLogout) onLogout(); // Panggil onLogout untuk memastikan state App.js sinkron
+        navigate('/login');
         return;
       }
 
       try {
-        // Ganti URL ini dengan endpoint API Spring Boot yang dilindungi
-        // Contoh: endpoint yang membutuhkan autentikasi
         const response = await axios.get('http://localhost:8083/api/protected-resource', {
           headers: {
-            'Authorization': `Bearer ${token}` // Kirim token di header Authorization
+            'Authorization': `Bearer ${token}`
           }
         });
-        setMessage(response.data); // Asumsi backend mengirim pesan selamat datang
+        setMessage(response.data);
       } catch (err) {
         console.error('Error fetching protected data:', err);
         setError('Gagal memuat data. Mungkin Anda perlu login kembali.');
-        // Jika token tidak valid atau kadaluarsa, arahkan ke login
         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-          localStorage.removeItem('token'); // Hapus token kadaluarsa
+          localStorage.removeItem('token');
+          if (onLogout) onLogout(); // Panggil onLogout jika token tidak valid
           navigate('/login');
         }
       } finally {
@@ -39,11 +40,12 @@ const DashboardPage = () => {
     };
 
     fetchProtectedData();
-  }, [navigate]);
+  }, [navigate, onLogout]); // Tambahkan onLogout ke dependency array
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Hapus token dari local storage
-    navigate('/login'); // Arahkan ke halaman login
+    localStorage.removeItem('token');
+    if (onLogout) onLogout(); // Panggil onLogout saat logout
+    navigate('/login');
   };
 
   if (loading) {

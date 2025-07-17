@@ -1,40 +1,61 @@
-import React from 'react';
+// App.js
+import React, { useState, useEffect } from 'react'; // Tambahkan useEffect
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import AuthForm from './components/AuthForm'; // Asumsi ini adalah komponen form register/login Anda
+import AuthForm from './components/AuthForm';
 import DashboardPage from './pages/DashboardPage';
 
 const App = () => {
-  // Fungsi sederhana untuk memeriksa apakah pengguna sudah login (ada token di localStorage)
-  const isAuthenticated = () => {
-    return localStorage.getItem('token') !== null;
+  // Gunakan state untuk melacak status autentikasi
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Periksa status autentikasi saat komponen mount
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setIsLoggedIn(true);
+    }
+  }, []); // [] agar hanya berjalan sekali saat mount
+
+  // Fungsi untuk memperbarui status login
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
   };
 
   return (
     <Router>
       <Routes>
-        {/* Landing Page sebagai halaman utama */}
         <Route path="/" element={<LandingPage />} />
-
-        {/* Halaman Register */}
         <Route path="/register" element={<AuthForm type="register" />} />
 
-        {/* Halaman Login */}
-        <Route path="/login" element={<AuthForm type="login" />} />
+        {/* Kirim fungsi handleLoginSuccess ke AuthForm */}
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <AuthForm type="login" onLoginSuccess={handleLoginSuccess} />
+            )
+          }
+        />
 
         {/* Halaman Dashboard (Protected Route) */}
         <Route
           path="/dashboard"
           element={
-            isAuthenticated() ? (
-              <DashboardPage />
+            isLoggedIn ? (
+              <DashboardPage onLogout={handleLogout} /> // Kirim juga onLogout ke DashboardPage
             ) : (
-              <Navigate to="/login" replace /> // Redirect ke login jika belum login
+              <Navigate to="/login" replace />
             )
           }
         />
 
-        {/* Redirect untuk path yang tidak dikenal, bisa ke landing page atau 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
