@@ -17,22 +17,23 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${bni.app.jwtSecret}") // Rahasia JWT dari application.properties
+    @Value("${bni.app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${bni.app.jwtExpirationMs}") // Waktu kadaluarsa JWT dari application.properties
+    @Value("${bni.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
     // Method untuk menghasilkan token JWT
     public String generateJwtToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
 
+        // Subjek token adalah email (yang sekarang diwakili oleh getUsername() dari UserDetails)
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername())) // Subjek token adalah username
-                .setIssuedAt(new Date()) // Waktu pembuatan token
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Waktu kadaluarsa token
-                .signWith(key(), SignatureAlgorithm.HS256) // Menandatangani token dengan secret key
-                .compact(); // Membangun token menjadi string
+                .setSubject((userPrincipal.getUsername())) // userPrincipal.getUsername() akan mengembalikan email dari UserDetailsImpl
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     // Mendapatkan secret key
@@ -40,8 +41,8 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    // Mendapatkan username dari token JWT
-    public String getUserNameFromJwtToken(String token) {
+    // Mendapatkan email dari token JWT (sebelumnya username)
+    public String getUserEmailFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }

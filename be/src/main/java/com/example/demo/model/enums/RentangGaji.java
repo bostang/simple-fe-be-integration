@@ -1,4 +1,7 @@
 package com.example.demo.model.enums;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Enum representing different salary ranges.
  */
@@ -19,5 +22,15 @@ public enum RentangGaji {
 
     public String getDisplayValue() {
         return displayValue;
+    }
+
+    @JsonCreator
+    public static RentangGaji fromString(String text) {
+        for (RentangGaji rg : RentangGaji.values()) {
+            if (rg.displayValue.equalsIgnoreCase(text)) {
+                return rg;
+            }
+        }
+        throw new IllegalArgumentException("Rentang Gaji '" + text + "' tidak valid.");
     }
 }

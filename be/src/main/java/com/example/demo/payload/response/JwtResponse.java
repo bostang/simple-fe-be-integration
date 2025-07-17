@@ -1,14 +1,13 @@
 package com.example.demo.payload.response;
 
-// Kelas ini digunakan untuk mengirimkan respons JWT setelah autentikasi berhasil
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
-    private String username; // Atau email, id, roles, sesuai kebutuhan
+    private String email; // Diubah dari username menjadi email
 
-    public JwtResponse(String accessToken, String username) {
+    public JwtResponse(String accessToken, String email) { // Menggunakan email
         this.token = accessToken;
-        this.username = username;
+        this.email = email;
     }
 
     // Getters dan Setters
@@ -28,11 +27,11 @@ public class JwtResponse {
         this.type = type;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() { // Mengubah getter untuk email
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) { // Mengubah setter untuk email
+        this.email = email;
     }
 }

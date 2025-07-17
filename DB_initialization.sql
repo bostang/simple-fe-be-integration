@@ -1,52 +1,55 @@
 -- File: DB_initialization.sql
 -- This script initializes the database and sets up the necessary tables
 
--- jalankan dengan :
+-- Run with:
     -- psql -U postgres -f DB_initialization.sql
 
--- Membuat Database
--- Pastikan terkoneksi ke database default seperti 'postgres' saat menjalankan perintah ini.
--- Ganti 'user_db' jika  ingin nama database yang berbeda.
+-- Create Database
+-- Ensure you are connected to a default database like 'postgres' when running this command.
+-- Change 'user_db' if you want a different database name.
 
-DROP DATABASE IF EXISTS user_db; -- Hapus database jika sudah ada, untuk menghindari error saat membuat ulang
-CREATE DATABASE user_db WITH OWNER postgres; -- Ganti 'postgres' jika ingin menggunakan owner yang berbeda
--- Menghubungkan ke database yang baru dibuat (jika menggunakan psql atau client lain)
+DROP DATABASE IF EXISTS user_db; -- Drop the database if it exists, to avoid errors when recreating
+CREATE DATABASE user_db WITH OWNER postgres; -- Change 'postgres' if you want to use a different owner
+-- Connect to the newly created database (if using psql or another client)
 \c user_db;
--- Jika  menjalankan ini dari tools seperti DBeaver atau pgAdmin,
---  biasanya akan memilih database 'user_db' terlebih dahulu.
+-- If you are running this from tools like DBeaver or pgAdmin,
+-- you will usually select the 'user_db' database first.
 
--- Membuat Tabel Users
--- Jalankan perintah ini setelah  terhubung ke database 'user_db'.
+-- Create Users Table
+-- Run this command after you have connected to the 'user_db' database.
 
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY, -- BIGSERIAL otomatis akan menjadi auto-incrementing big integer
-    username VARCHAR(255) NOT NULL UNIQUE, -- Username tidak boleh kosong dan harus unik
-    password VARCHAR(255) NOT NULL -- Password tidak boleh kosong
+    id BIGSERIAL PRIMARY KEY, -- BIGSERIAL will automatically be an auto-incrementing big integer
+    -- username VARCHAR(255) NOT NULL UNIQUE, -- Username column removed as per new requirements
+    password VARCHAR(255) NOT NULL, -- Password cannot be null
+
+    -- New columns as per the updated structure
+    nama_lengkap VARCHAR(255) NOT NULL,
+    nik VARCHAR(255) NOT NULL UNIQUE, -- NIK cannot be null and must be unique
+    nama_ibu_kandung VARCHAR(255) NOT NULL,
+    nomor_telepon VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE, -- Email cannot be null and must be unique, used for login
+    tipe_akun VARCHAR(255) NOT NULL,
+    tempat_lahir VARCHAR(255) NOT NULL,
+    tanggal_lahir DATE NOT NULL,
+    jenis_kelamin VARCHAR(255) NOT NULL,
+    agama VARCHAR(255) NOT NULL,
+    status_pernikahan VARCHAR(255) NOT NULL,
+    pekerjaan VARCHAR(255) NOT NULL,
+    sumber_penghasilan VARCHAR(255) NOT NULL,
+    rentang_gaji VARCHAR(255) NOT NULL,
+    tujuan_pembuatan_rekening VARCHAR(255) NOT NULL,
+    kode_rekening INTEGER NOT NULL
 );
 
--- Opsional: Menambahkan indeks pada kolom username untuk performa pencarian yang lebih cepat
-CREATE INDEX idx_username ON users (username);
+-- Optional: Add indexes on email and nik columns for faster search performance
+CREATE INDEX idx_email ON users (email);
+CREATE INDEX idx_nik ON users (nik);
 
 ---
 
--- Contoh Data (Opsional: Hanya untuk pengujian)
--- Catatan: Password di sini masih dalam plain text.
--- Di aplikasi nyata,  HARUS menggunakan BCryptPasswordEncoder di Spring Boot
--- untuk menghash password sebelum menyimpannya ke database.
--- Contoh password 'password123' yang sudah di-hash oleh BCrypt akan terlihat seperti '$2a$10$xyz...'
--- Jadi, data di bawah ini hanya untuk ilustrasi struktur tabel.
-
--- INSERT INTO users (username, password) VALUES
--- ('testuser', 'password123'); -- Ini adalah password plain text, HINDARI di produksi!
-
--- INSERT INTO users (username, password) VALUES
--- ('admin', '$2a$10$yA9Zp.D.L.cZ.j.n0V0c.O/U.c.p.Z.c.t.f.R.g.H.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.');
--- Contoh password 'secret123' yang di-hash menggunakan BCrypt
-
--- Jalankan setelah terhubung ke database user_db
-
--- Membuat Tabel Addresses
+-- Create Addresses Table
 DROP TABLE IF EXISTS addresses CASCADE;
 CREATE TABLE addresses (
     id BIGSERIAL PRIMARY KEY,
@@ -58,7 +61,7 @@ CREATE TABLE addresses (
     kode_pos VARCHAR(255) NOT NULL
 );
 
--- Membuat Tabel Guardians
+-- Create Guardians Table
 DROP TABLE IF EXISTS guardians CASCADE;
 CREATE TABLE guardians (
     id BIGSERIAL PRIMARY KEY,
@@ -69,7 +72,7 @@ CREATE TABLE guardians (
     nomor_telepon_wali VARCHAR(255)
 );
 
--- Memperbarui Tabel Users untuk menambahkan foreign keys
+-- Update Users Table to add foreign keys
 ALTER TABLE users
 ADD COLUMN address_id BIGINT UNIQUE,
 ADD COLUMN guardian_id BIGINT UNIQUE;
@@ -78,28 +81,37 @@ ALTER TABLE users
 ADD CONSTRAINT fk_address
 FOREIGN KEY (address_id)
 REFERENCES addresses (id)
-ON DELETE SET NULL; -- Atau ON DELETE CASCADE jika Anda ingin address ikut terhapus
+ON DELETE SET NULL; -- Or ON DELETE CASCADE if you want the address to be deleted along with the user
 
 ALTER TABLE users
 ADD CONSTRAINT fk_guardian
 FOREIGN KEY (guardian_id)
 REFERENCES guardians (id)
-ON DELETE SET NULL; -- Atau ON DELETE CASCADE jika Anda ingin guardian ikut terhapus
+ON DELETE SET NULL; -- Or ON DELETE CASCADE if you want the guardian to be deleted along with the user
 
--- Opsional: Menambahkan kolom lain ke tabel users jika belum ada
-ALTER TABLE users ADD COLUMN nama_lengkap VARCHAR(255);
-ALTER TABLE users ADD COLUMN nik VARCHAR(255);
-ALTER TABLE users ADD COLUMN nama_ibu_kandung VARCHAR(255);
-ALTER TABLE users ADD COLUMN nomor_telepon VARCHAR(255);
-ALTER TABLE users ADD COLUMN email VARCHAR(255);
-ALTER TABLE users ADD COLUMN tipe_akun VARCHAR(255);
-ALTER TABLE users ADD COLUMN tempat_lahir VARCHAR(255);
-ALTER TABLE users ADD COLUMN tanggal_lahir DATE;
-ALTER TABLE users ADD COLUMN jenis_kelamin VARCHAR(255);
-ALTER TABLE users ADD COLUMN agama VARCHAR(255);
-ALTER TABLE users ADD COLUMN status_pernikahan VARCHAR(255);
-ALTER TABLE users ADD COLUMN pekerjaan VARCHAR(255);
-ALTER TABLE users ADD COLUMN sumber_penghasilan VARCHAR(255);
-ALTER TABLE users ADD COLUMN rentang_gaji VARCHAR(255);
-ALTER TABLE users ADD COLUMN tujuan_pembuatan_rekening VARCHAR(255);
-ALTER TABLE users ADD COLUMN kode_rekening INTEGER;
+-- Example Data (Optional: For testing only)
+-- Note: Passwords here are still in plain text.
+-- In a real application, you MUST use BCryptPasswordEncoder in Spring Boot
+-- to hash passwords before storing them in the database.
+-- An example 'password123' hashed by BCrypt would look like '$2a$10$xyz...'
+-- So, the data below is only for illustrating the table structure.
+
+-- INSERT INTO addresses (nama_alamat, provinsi, kota, kecamatan, kelurahan, kode_pos) VALUES
+-- ('Jl. Contoh No. 123, RT 001/RW 002', 'DKI Jakarta', 'Jakarta Pusat', 'Tanah Abang', 'Bendungan Hilir', '10210');
+
+-- INSERT INTO guardians (jenis_wali, nama_lengkap_wali, pekerjaan_wali, alamat_wali, nomor_telepon_wali) VALUES
+-- ('Ayah', 'Budi Santoso', 'Pensiunan', 'Jl. Contoh Wali No. 456', '081211223344');
+
+-- INSERT INTO users (
+--     email, password, nama_lengkap, nik, nama_ibu_kandung, nomor_telepon,
+--     tipe_akun, tempat_lahir, tanggal_lahir, jenis_kelamin, agama, status_pernikahan,
+--     pekerjaan, sumber_penghasilan, rentang_gaji, tujuan_pembuatan_rekening, kode_rekening,
+--     address_id, guardian_id
+-- ) VALUES (
+--     'john.doe@example.com', '$2a$10$yA9Zp.D.L.cZ.j.n0V0c.O/U.c.p.Z.c.t.f.R.g.H.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.', -- Hashed password for 'password123!'
+--     'John Doe', '3175031234567890', 'Mary Doe', '081234567890',
+--     'BNI Taplus', 'Jakarta', '1990-05-15', 'Laki-laki', 'Islam', 'Belum Kawin',
+--     'Software Engineer', 'Gaji', '5-10 juta', 'Tabungan', 1001,
+--     1, -- Assuming address_id 1 exists from the previous insert
+--     1  -- Assuming guardian_id 1 exists from the previous insert
+-- );

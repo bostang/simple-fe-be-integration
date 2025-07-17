@@ -1,4 +1,3 @@
-// Contoh: src/main/java/com/example/demo/service/UserDetailsServiceImpl.java
 package com.example.demo.service;
 
 import com.example.demo.model.User;
@@ -9,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList; // Menggunakan ArrayList untuk peran kosong sementara
+import java.util.ArrayList;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,16 +17,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { // Parameter tetap username, tapi kita asumsikan itu adalah email
+        User user = userRepository.findByEmail(email) // Cari berdasarkan email
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email)); // Ubah pesan error
 
-        // Anda bisa mengimplementasikan peran (roles) di sini jika model User Anda memilikinya.
-        // Untuk saat ini, kita bisa menggunakan UserDetails default dari Spring Security.
+        // Mengembalikan UserDetails dengan email sebagai username untuk Spring Security
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
+                user.getEmail(), // Gunakan email sebagai username untuk Spring Security
                 user.getPassword(),
-                new ArrayList<>() // Contoh: peran kosong. Sesuaikan jika Anda punya role.
+                new ArrayList<>()
         );
     }
 }

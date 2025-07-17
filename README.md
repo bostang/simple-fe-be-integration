@@ -17,7 +17,10 @@ PORT_FE=3000
 ```bash
 # jalankan DB_initialization.sql
 psql -U postgres -f DB_initialization.sql
+psql -U postgres -f DB_validaor_initialization.sql
 ```
+
+Pastikan pada `application.properties`, `username=postgres` dan `passowrd` sudah sesuai password postgres local anda.
 
 ### Langkah 1 : Buat & Jalankan Backend
 
@@ -33,7 +36,22 @@ psql -U postgres -f DB_initialization.sql
 mvn spring-boot:run
 ```
 
+lakukan untuk `be` dan `eksternal_dukcapil`
+
 ### Langkah 2 : Buat & Jalankan Frontend
+
+```bash
+npm install
+npm start
+```
+
+### Langkah 3 : Akses Frontend via web
+
+`localhots:3000`
+
+## CATATAN TAMABAHAN
+
+### CARA MEMBUAT PROJECT REACT DARI KOSONG
 
 ```bash
 # CATATAN : buat dari folder fe kosong! jangan pakai yang ada di github repo, karena node_modules ter-ignore.
@@ -68,18 +86,60 @@ localhost:3000
 
 ## Demonstrasi
 
-tampilan frontend (password salah) :
+![tampilan-demo-frontend-landing-page](./img/tampilan-demo-frontend-landing-page.png)
 
-![tampilan-frontend-demo-1](./img/tampilan-frontend-demo-1.png)
+## TESTING REGISTRASI (cURL)
 
-tampilan frontend (password benar) :
+- **Registrasi**
 
-![tampilan-frontend-demo-2](./img/tampilan-frontend-demo-2.png)
+```bash
+curl -X POST \
+  http://localhost:8083/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "namaLengkap": "Dewi Kartika",
+    "nik": "3201010000000004",
+    "namaIbuKandung": "Mary Doe",
+    "nomorTelepon": "081234567890",
+    "email": "john.doe@example.com",
+    "password": "JohnDoe123!",
+    "tipeAkun": "BNI Taplus",
+    "tempatLahir": "Jakarta",
+    "tanggalLahir": "1990-05-15",
+    "jenisKelamin": "Laki-laki",
+    "agama": "Islam",
+    "statusPernikahan": "Janda",
+    "pekerjaan": "Software Engineer",
+    "sumberPenghasilan": "Gaji",
+    "rentangGaji": ">Rp100 juta",
+    "tujuanPembuatanRekening": "Tabungan",
+    "kodeRekening": 1001,
+    "alamat": {
+      "namaAlamat": "Jl. Sudirman No. 123, RT 001/RW 002",
+      "provinsi": "DKI Jakarta",
+      "kota": "Jakarta Pusat",
+      "kecamatan": "Tanah Abang",
+      "kelurahan": "Bendungan Hilir",
+      "kodePos": "10210"
+    },
+    "wali": {
+      "jenisWali": "Ayah",
+      "namaLengkapWali": "Robert Doe",
+      "pekerjaanWali": "Pensiunan",
+      "alamatWali": "Jl. Sudirman No. 123, RT 001/RW 002",
+      "nomorTeleponWali": "081298765432"
+    }
+}'
+```
 
-tampilan pada log backend:
+- **Login**
 
-![tampilan-backend-demo](./img/tampilan-backend-demo.png)
-
-tampilan DB :
-
-![tampilan-db-demo](./img/tampilan-db-demo.png)
+```bash
+curl -X POST \
+  http://localhost:8083/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "email": "john.doe@example.com",
+    "password": "JohnDoe123!"
+  }'
+```
